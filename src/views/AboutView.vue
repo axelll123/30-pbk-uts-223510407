@@ -1,193 +1,85 @@
 <template>
-  <div class="todo-app">
-    <h1>Todays Activities</h1>
-    <form @submit.prevent="addTodo">
-      <input type="text" v-model="newTodo" placeholder="Add Something!" />
-      <button type="submit" class="primary">Add</button>
-    </form>
-    <h2>List Items</h2>
-    <div class="filter-section">
-      <button @click="filterTodos('all')" class="filter-btn">All</button>
-      <button @click="filterTodos('active')" class="filter-btn">Not Completed</button>
-      <button @click="filterTodos('completed')" class="filter-btn">Completed</button>
+  <div class="profile">
+    <h1>Postingan Pengguna</h1>
+    <div>
+      <label for="users">Pilih Pengguna:</label>
+      <select id="users" v-model="selectedUserId" @change="loadUserPosts">
+        <option v-for="user in users" :key="user.id" :value="user.id">{{ user.name }}</option>
+      </select>
     </div>
-    <ul class="todo-list">
-      <li v-for="(todo, index) in filteredTodos" :key="index">
-        <input type="checkbox" v-model="todo.done" />
-        <span :class="{ 'done': todo.done }">{{ todo.text }}</span>
-        <button @click="removeTodo(index)" class="danger">Remove</button>
-      </li>
-    </ul>
-    <footer>
-      <p>Created by Sulthon</p>
-    </footer>
+    <div class="user-posts">
+      <div v-if="loading">Loading...</div>
+      <div v-else>
+        <div v-for="post in userPosts" :key="post.id">
+          <h2>{{ post.title }}</h2>
+          <p>{{ post.body }}</p>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
-
-
 
 <script>
 export default {
   data() {
     return {
-      newTodo: '',
-      todos: [],
-      filter: 'all',
+      users: [],
+      selectedUserId: null,
+      userPosts: [],
+      loading: false
     };
   },
+  mounted() {
+    this.fetchUsers();
+  },
   methods: {
-    addTodo() {
-      if (this.newTodo.trim().length === 0) {
-        return;
-      }
-      this.todos.push({
-        text: this.newTodo,
-        done: false,
-      });
-      this.newTodo = '';
+    fetchUsers() {
+      fetch('https://jsonplaceholder.typicode.com/users')
+        .then(response => response.json())
+        .then(data => {
+          this.users = data;
+        })
+        .catch(error => {
+          console.error('Error fetching users:', error);
+        });
     },
-    removeTodo(index) {
-      this.todos.splice(index, 1);
-    },
-    filterTodos(filterType) {
-      this.filter = filterType;
-    },
-  },
-  computed: {
-    filteredTodos() {
-      switch (this.filter) {
-        case 'active':
-          return this.todos.filter(todo => !todo.done);
-        case 'completed':
-          return this.todos.filter(todo => todo.done);
-        default:
-          return this.todos;
-      }
-    },
-  },
+    loadUserPosts() {
+      if (!this.selectedUserId) return;
+      this.loading = true;
+      fetch(`https://jsonplaceholder.typicode.com/posts?userId=${this.selectedUserId}`)
+        .then(response => response.json())
+        .then(data => {
+          this.userPosts = data;
+          this.loading = false;
+        })
+        .catch(error => {
+          console.error('Error fetching user posts:', error);
+          this.loading = false;
+        });
+    }
+  }
 };
-
-
 </script>
 
 <style>
-/* General Styles */
-body {
-  color: rgb(252, 248, 248);
-  font-family: "Dancing Script", cursive;
-  margin: 0;
-  background-image: url(/src/assets/3401742.jpg);
-  background-size: cover;
-  background-repeat: no-repeat;
-}
-
-/* Todo List Container */
-.todo-app {
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-  max-width: 600px;
-  margin: 40px auto;
-  padding: 40px;
+.profile {
+  background-color: #73ede1;
+  padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  background-color: #82e6d5; /* Warna hitam untuk kontainer */
-  color: rgb(2, 2, 9); /* Warna biru gelap untuk teks */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Heading */
-.todo-app h1 {
+.profile h1 {
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  color: #2f6baa;
   text-align: center;
-  color: #4d6aff;
-  font-size: 2rem;
-  margin-bottom: 20px;
 }
 
-/* Input Form */
-.todo-app form {
-  display: flex;
-  margin-bottom: 20px;
+.user-posts {
+  margin-top: 20px;
 }
 
-.todo-app input[type=text] {
-  flex: 1;
-  padding: 15px 20px;
-  font-size: 1.2rem;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  outline: none;
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+.user-posts h2 {
+  color: #2f6baa;
 }
-
-.todo-app button[type=submit] {
-  margin-left: 10px;
-  padding: 10px 20px;
-  font-size: 1.2rem;
-  background-color: rgb(107, 62, 255);
-  color: #fff;
-}
-
-.done{
-  text-decoration: line-through;
-  color: #747171;
-}
-/* Filter Section */
-.filter-section {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.filter-btn {
-  padding: 10px 20px;
-  margin: 0 10px; /* Jarak antar tombol */
-  font-size: 1rem;
-  background-color: rgb(107, 62, 255); /* Warna biru */
-  color: #fff; /* Warna teks putih */
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.filter-btn:hover {
-  background-color: #0056b3; /* Warna biru gelap saat dihover */
-}
-
-/* Todo List */
-.todo-list {
-  list-style: none;
-  padding: 0;
-}
-
-.todo-list li {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px;
-  margin-bottom: 10px;
-  background-color: #000; /* Warna hitam */
-  color: #fff; /* Warna teks putih */
-  border-radius: 5px;
-}
-
-.todo-list li input[type="checkbox"] {
-  margin-right: 10px;
-}
-
-.todo-list li .done {
-  text-decoration: line-through;
-}
-
-.todo-list li .danger {
-  padding: 5px 10px;
-  font-size: 0.8rem;
-  background-color: #dc3545; /* Warna merah */
-  color: #fff; /* Warna teks putih */
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.todo-list li .danger:hover {
-  background-color: #c82333; /* Warna merah gelap saat dihover */
-}
-
-
 </style>
