@@ -1,37 +1,41 @@
+<template>
+  <div>
+    <nav>
+      <button style="background-color: darkcyan;"><RouterLink to="/">TodoList</RouterLink></button>
+      <button style="background-color: darkcyan;"><RouterLink to="/about">Post</RouterLink></button>
+    </nav>
+    <header>
+      <img alt="Vue logo" class="logo" src="@/assets/cat.jpeg" width="125" height="125" />
+
+      <div class="wrapper">
+        <h1>Sulthon</h1>
+      </div>
+    </header>
+
+   
+
+    <RouterView />
+  </div>
+</template>
+
 <script setup>
 import { RouterLink, RouterView } from 'vue-router'
 import HelloWorld from './components/HelloWorld.vue'
 </script>
 
-<template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/cat.jpeg" width="125" height="125" />
-
-    <div class="wrapper">
-      <h1>Sulthon</h1>
-
-      <nav>
-        <button style="background-color: darkcyan;"><RouterLink to="/">Home</RouterLink></button>
-      <button style="background-color: darkcyan;"><RouterLink to="/about">ToDolist</RouterLink></button>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
-</template>
-
 <style scoped>
-/* Warna-warna tambahan */
+
 :root {
-  --color-primary: #007bff; /* Warna utama */
-  --color-text: #f4e9e9; /* Warna teks */
-  --color-background: #f8f9fa; /* Warna latar belakang */
-  --color-border: #ced4da; /* Warna border */
+  --color-primary: #007bff; 
+  --color-text: #f4e9e9; 
+  --color-background: #f8f9fa; 
+  --color-border: #ced4da;
 }
 
 header {
   line-height: 1.5;
   max-height: 100vh;
+  text-align: center; 
 }
 
 .logo {
@@ -47,19 +51,19 @@ nav {
 }
 
 nav a.router-link-exact-active {
-  color: var(--color-primary); /* Warna teks aktif */
+  color: var(--color-primary);
 }
 
 nav a.router-link-exact-active:hover {
-  background-color: var(--color-primary); /* Warna latar belakang saat dihover */
-  color: #fff; /* Warna teks saat dihover */
+  background-color: var(--color-primary);
+  color: #fff;
 }
 
 nav a {
   display: inline-block;
   padding: 0 1rem;
   border-left: 1px solid var(--color-border);
-  color: var(--color-text); /* Warna teks */
+  color: var(--color-text); 
 }
 
 nav a:first-of-type {
@@ -87,12 +91,10 @@ nav a:first-of-type {
   }
 
   nav {
-    text-align: left;
-    margin-left: -1rem;
+    text-align: center; 
     font-size: 1rem;
     padding: 1rem 0;
     margin-top: 1rem;
   }
 }
-
 </style>
